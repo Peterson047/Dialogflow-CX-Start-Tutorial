@@ -1,210 +1,188 @@
 # Dialogflow-CX-Start-Tutorial
 
-### Content
-- ##### [Introduction](#intro)
-- ##### [Environnement Installation](#install)
-- ##### [Dialogflow CX Setup ](#Setup)
-- ##### [Exploring the created agent](#welcomemessage)
-- ##### [Managing Flows & Pages](#FlowsandPages)
-- ##### [Exercise](#exercise)
-- ##### [Building a webhook](#webhook)
-- ##### [Designing more complex conversations](#complexconversations)
-- ##### [Conclusion](#conclu)
+### Conteúdo
+- ##### [Introdução](#intro)
+- ##### [Instalação do Ambiente](#install)
+- ##### [Configuração do Dialogflow CX](#Setup)
+- ##### [Explorando o agente criado](#welcomemessage)
+- ##### [Gerenciando Fluxos e Páginas](#FlowsandPages)
+- ##### [Exercício](#exercise)
+- ##### [Construindo um webhook](#webhook)
+- ##### [Desenhando conversas mais complexas](#complexconversations)
+- ##### [Conclusão](#conclu)
 
-
-## <a name="intro"></a>Introduction
-This guide shows how to use the Dialogflow CX Console to build and test a simple demo agent. When interacting with this agent, you can ask for getting the weather forecast information, search for a restaurant and make a table reservation. Your completed agent for this guide will be graphed by the console like the following:
+## <a name="intro"></a>Introdução
+Este guia mostra como usar o Console Dialogflow CX para construir e testar um agente de demonstração simples. Ao interagir com este agente, você pode solicitar informações da previsão do tempo, pesquisar um restaurante e fazer uma reserva de mesa. Seu agente completo para este guia será representado pelo console como o seguinte:
 
 <p align="center">
   <img src="images/demo_flows.png">
 </p>
 
-## <a name="install"></a>Environnement Installation 
-During this tutorial, we will need to use Python as a programming language, visual studio code to write code, and Ngrok to deploy webhook services in localhost. [Here](https://github.com/hayo03/Installation) are the steps to install all of these.
-## <a name="Setup"></a>Dialogflow CX Setup 
-1. To use services provided by Google Cloud, you need to create a project using [Google Cloud Console](https://console.cloud.google.com/) and enable the Dialogflow API.
-2. Using [DF-CX console](https://dialogflow.cloud.google.com/cx/projects), choose the project you just created and click Create agent.<br>
-3. Complete the form for basic agent settings:<br>
-   - Name it "Demo-agent" <br>
-   - Select your preferred location. <br>
-   - Select your preferred time zone.<br>
-   - Select "English" as default language for your agent.<br>
-4. Click Save.<br> 
+## <a name="install"></a>Instalação do Ambiente
+Durante este tutorial, precisaremos usar Python como linguagem de programação, Visual Studio Code para escrever código e Ngrok para implantar serviços de webhook em localhost. [Aqui](https://github.com/hayo03/Installation) estão os passos para instalar todos eles.
 
-## <a name="welcomemessage"></a>Exploring the created agent 
-The created agent has a default Start Flow with a start page that comes with default welcome intent. Within this default setting, the agent can handle a basic conversation with only a welcome message.
+## <a name="Setup"></a>Configuração do Dialogflow CX
+1. Para usar os serviços fornecidos pelo Google Cloud, você precisa criar um projeto usando o [Google Cloud Console](https://console.cloud.google.com/) e habilitar a API do Dialogflow.
+2. Usando o [console DF-CX](https://dialogflow.cloud.google.com/cx/projects), escolha o projeto que você acabou de criar e clique em Criar agente.<br>
+3. Complete o formulário para as configurações básicas do agente:<br>
+   - Nomeie-o "Demo-agent" <br>
+   - Selecione sua localização preferida. <br>
+   - Selecione seu fuso horário preferido.<br>
+   - Selecione "English" como idioma padrão para seu agente.<br>
+4. Clique em Salvar.<br>
+
+## <a name="welcomemessage"></a>Explorando o agente criado
+O agente criado tem um Fluxo Inicial padrão com uma página inicial que vem com uma intenção de boas-vindas padrão. Com essa configuração padrão, o agente pode lidar com uma conversa básica com apenas uma mensagem de boas-vindas.
 
 ![tt](images/agent_default.png)
 
-<b><i>To test your new agent</i></b>:
-1. Click the Test Agent button to open the simulator.
-2. Enter hello in the text entry and press enter. The agent responds with a default welcome response.
-3. Close the simulator 
+**_Para testar seu novo agente_**:
+1. Clique no botão Testar Agente para abrir o simulador.
+2. Digite hello na entrada de texto e pressione enter. O agente responde com uma resposta de boas-vindas padrão.
+3. Feche o simulador.
 
-<b><i>To edit the welcome response message</i></b>:
-1. Click the Build tab.
-2. Select the Default Start Flow in the Flows section.
-3. Click the Start node in the graph. This is the start page for the Default Start Flow.
-4. Find the intent route with the Default Welcome Intent and click it. This opens a panel to edit the intent route information.
-5. Find the fulfillment section and delete all response messages, then add "Hello, I am here. How I can help you?" as the only response.
-6. Click Save and Close the intent route editing panel.
-7. Test the updated welcome response message.
+**_Para editar a mensagem de resposta de boas-vindas_**:
+1. Clique na guia Build.
+2. Selecione o Fluxo Inicial Padrão na seção Flows.
+3. Clique no nó Start no gráfico. Esta é a página inicial para o Fluxo Inicial Padrão.
+4. Encontre a rota de intenção com a Default Welcome Intent e clique nela. Isso abre um painel para editar as informações da rota de intenção.
+5. Encontre a seção de fulfillment e exclua todas as mensagens de resposta, então adicione "Olá, estou aqui. Como posso ajudá-lo?" como a única resposta.
+6. Clique em Save e feche o painel de edição da rota de intenção.
+7. Teste a mensagem de resposta de boas-vindas atualizada.
 
-## <a name="FlowsandPages"></a>Managing Flows & Pages
-So far, the agent has one flow with the start page. In this section, we will add another flow that handle requests about the weather forecast. The design of this flow is like the following:
+## <a name="FlowsandPages"></a>Gerenciando Fluxos e Páginas
+Até agora, o agente tem um fluxo com a página inicial. Nesta seção, vamos adicionar outro fluxo que lida com solicitações sobre a previsão do tempo. O design deste fluxo é como o seguinte:
 
 <p align="center">
   <img src="images/weather-forecast-conversation.png">  <img src="images/Weather-forecast-flow.png">
 </p>
 
-<b> Weather forecast flow: </b> allows users to ask about weather forecast in a given city. Before building it, we need to create the intent that once matched, the flow will be called to handle the user request. <br>
-<b>Create intent: </b>
-1. Select the Manage tab.
-2. Click Intents, click Create, enter weather.current as an intent name and enter the training phrases in [utterances.text](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/intents/GetWeather.txt).
-3. For each phrase that contains a city, annotate the city with a parameter named "city" and @sys.geo-city as entity type and Click Save.
+**Fluxo de previsão do tempo:** permite que os usuários perguntem sobre a previsão do tempo em uma determinada cidade. Antes de construí-lo, precisamos criar a intenção que, uma vez correspondida, o fluxo será chamado para lidar com a solicitação do usuário. <br>
+**Criar intenção:**
+1. Selecione a guia Manage.
+2. Clique em Intents, clique em Create, insira weather.current como um nome de intenção e insira as frases de treinamento em [utterances.text](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/intents/GetWeather.txt).
+3. Para cada frase que contém uma cidade, anote a cidade com um parâmetro chamado "city" e @sys.geo-city como tipo de entidade e clique em Save.
 
-<b>Create Flow : </b> 
-1. Select the Build tab.
-2. Click Flows.
-3. Click Create and enter Weather forecast as a flow name. 
+**Criar Fluxo:**
+1. Selecione a guia Build.
+2. Clique em Flows.
+3. Clique em Create e insira Weather forecast como nome do fluxo.
 
-<b>Create Page : </b> <br>
-By default, the Weather forecast flow has a special page named Start. When a flow initially becomes active, this page becomes the current active page. A start page does not have parameters or response messages like normal pages. So we need to create pages that will collect city information from user and handle his/her request (i.e., provide answers to the user). <br>
- 1. Click on "Start" page in Weather forecast flow 
- 2. Click the add + button in the Pages section.
- 3. Enter "Collect city" as a display name for the page.
- 4. Click the settings more_vert button next to the page display name and select Edit.
- 5. Create a new parameter:<br>
-   - Parameter name: city<br>
-   - Entity type: @sys.geo-city<br>
-   - Check "Required"<br>
-   - Fulfillement (Agent says): What is the city?<br>
+**Criar Página:** <br>
+Por padrão, o fluxo Weather forecast tem uma página especial chamada Start. Quando um fluxo inicialmente se torna ativo, esta página se torna a página ativa atual. Uma página inicial não tem parâmetros ou mensagens de resposta como páginas normais. Portanto, precisamos criar páginas que coletarão informações da cidade do usuário e lidarão com sua solicitação (ou seja, fornecer respostas ao usuário). <br>
+1. Clique na página "Start" no fluxo Weather forecast.
+2. Clique no botão adicionar + na seção Pages.
+3. Insira "Collect city" como um nome de exibição para a página.
+4. Clique no botão de configurações more_vert ao lado do nome de exibição da página e selecione Edit.
+5. Crie um novo parâmetro:<br>
+   - Nome do parâmetro: city<br>
+   - Tipo de entidade: @sys.geo-city<br>
+   - Marque "Required"<br>
+   - Fulfillment (Agent says): Qual é a cidade?<br>
 
-<b> Create Routes: </b> <br> 
-As you notice there is no link between different flows (i.e., Default Start Flow and Weather forecast Flow) and the newly created page (Collect city). Without those links, the conversation between bot and user can not be handled. Therefore, Routes are introduced to define such links. We need to define three routes as follows: 
-1. Create a Route that transitions from the default start flow to  Weather forecast flow. This route should be called when the end-user asks for weather forecast. To create this route:  <br>
-  - Select the Default Start Flow in the Flows section.
-  - Click the Start node in the graph. 
-  - Add the following intent route:
-      - Intent: weather.current
-      - Transition: choose Flow  and select “Weather forecast” flow
-  - Click Save
+**Criar Rotas:** <br>
+Como você notou, não há ligação entre os diferentes fluxos (ou seja, Default Start Flow e Weather forecast Flow) e a página recém-criada (Collect city). Sem esses links, a conversa entre o bot e o usuário não pode ser tratada. Portanto, Rotas são introduzidas para definir tais links. Precisamos definir três rotas como segue:
+1. Criar uma Rota que faz a transição do fluxo inicial padrão para o fluxo Weather forecast. Esta rota deve ser chamada quando o usuário final pedir pela previsão do tempo. Para criar esta rota:<br>
+   - Selecione o Default Start Flow na seção Flows.
+   - Clique no nó Start no gráfico.
+   - Adicione a seguinte rota de intenção:
+     - Intenção: weather.current
+     - Transição: escolha Flow e selecione “Weather forecast” flow
+   - Clique em Save
 
-2. Create a Route that transitions from the start page of the Weather forecast flow to "Collect city" page. This route should be called when the intent “weather.current” is matched”. To create this route: <br> 
-   - Select the Weather forecast” Flow in the Flows section.
-   - Click the Start node in the graph. 
-   - Add the following intent route:
-       - Intent: weather.current
-       - Transition: choose Page  and select “Collect city” page
-    - Click Save
+2. Criar uma Rota que faz a transição da página inicial do fluxo Weather forecast para a página "Collect city". Esta rota deve ser chamada quando a intenção “weather.current” for correspondida. Para criar esta rota:<br>
+   - Selecione o fluxo “Weather forecast” na seção Flows.
+   - Clique no nó Start no gráfico.
+   - Adicione a seguinte rota de intenção:
+     - Intenção: weather.current
+     - Transição: escolha Page e selecione a página “Collect city”
+   - Clique em Save
 
-3. Create a route that transitions from “Collect city" page to End Flow page: this route should be called when all parameters are fulfilled. To create this route: <br> 
-   - Select the "Weather forecast” Flow in the Flows section.
-   - Click the Start node in the graph. 
-   - Add the following intent route:
-       - condition: $page.params.status="FINAL"
-       - Fulfillement (What the Agent will answer to the user):  There is clear sky in $session.params.city
-       - Transition: choose Page  and select “End Flow” page
-   - Click Save
+3. Criar uma rota que faz a transição da página “Collect city” para a página End Flow: esta rota deve ser chamada quando todos os parâmetros forem preenchidos. Para criar esta rota:<br>
+   - Selecione o fluxo “Weather forecast” na seção Flows.
+   - Clique no nó Start no gráfico.
+   - Adicione a seguinte rota de intenção:
+     - Condição: $page.params.status="FINAL"
+     - Fulfillment (O que o Agente responderá ao usuário): Há céu limpo em $session.params.city
+     - Transição: escolha Page e selecione a página “End Flow”
+   - Clique em Save
 
-Congratulations! Now you can test your agent to test if your flow is correctly created:
+Parabéns! Agora você pode testar seu agente para verificar se seu fluxo foi criado corretamente:
 
-<b> Test the Weather forecast flow: </b><br>
-1. Click the Test Agent button to open the simulator.<br>
-2. Enter "What does the weather forecast look like?" and press enter.<br>
-3. The agent will request you to provide the city and then provides you the weather forecast.<br>
+**Testar o fluxo Weather forecast:**<br>
+1. Clique no botão Test Agent para abrir o simulador.<br>
+2. Digite "Como está a previsão do tempo?" e pressione enter.<br>
+3. O agente solicitará que você forneça a cidade e então fornecerá a previsão do tempo.<br>
 
-
-## <a name="exercise"></a>Exercise
-Considering the following conversation example:
+## <a name="exercise"></a>Exercício
+Considerando o seguinte exemplo de conversa:
 <br clear="left">
 <img src="images/Restaurant_search_conversation_example.png" align="top" />
-1. Identify the flow design you think is required to support the given conversation example. Toward a solution, you may need to ask yourself the following questions:
-    - Do I need to add a new flow?
-    - Do I need to add a new intent? new parameters? new entity types? 
-    - Do I need to create a page?
-    - What are the required routes to support this case? 
-2. Once you identified the required design, add it to the Demo agent. 
-3. Test your Demo agent to check whether what you created will lead to the given conversation example.
+1. Identifique o design de fluxo que você acha necessário para suportar o exemplo de conversa dado. Para chegar a uma solução, você pode precisar se perguntar as seguintes perguntas:
+   - Preciso adicionar um novo fluxo?
+   - Preciso adicionar uma nova intenção? Novos parâmetros? Novos tipos de entidade?
+   - Preciso criar uma página?
+   - Quais são as rotas necessárias para suportar este caso?
+2. Uma vez que você identificou o design necessário, adicione-o ao agente Demo.
+3. Teste seu agente Demo para verificar se o que você criou levará ao exemplo de conversa dado.
 
-
-
-## <a name="webhook"></a>Building a webhook
-At this point, the created agent  can answer users only with static response messages. But in real cases, we need to generate dynamic responses, validate collected data, or trigger actions on the backend.  Webhooks are introduced to handle all of this.  They are simply the backend parts of the agent.
+## <a name="webhook"></a>Construindo um webhook
+Neste ponto, o agente criado pode responder aos usuários apenas com mensagens de resposta estáticas. Mas em casos reais, precisamos gerar respostas dinâmicas, validar dados coletados ou acionar ações no back-end. Webhooks são introduzidos para lidar com tudo isso. Eles são simplesmente as partes de back-end do agente.
 
 <p align="center">
   <img src="images/webhook.png">
 </p>
 
-As the diagram above shows, when a fulfillment  that has a webhook is called, the Dialogflow API sends a webhook request to the webhook service.
-The webhook service receives the webhook request and takes any actions necessary, like calling external APIs, querying or updating a database, etc. It builds a response and sends it back to Dialogflow API. A webhook can be created in any server side programming language like Python, PHP or Node.js. We are going to use Python to create a webhook and Ngrok to deploy it. Let’s start building our webhook for handling weather forecast requests. 
+Como o diagrama acima mostra, quando um fulfillment que tem um webhook é chamado, a API do Dialogflow envia uma solicitação de webhook para o serviço de webhook. O serviço de webhook recebe a solicitação de webhook e toma quaisquer ações necessárias, como chamar APIs externas, consultar ou atualizar um banco de dados, etc. Ele constrói uma resposta e a envia de volta para a API do Dialogflow. Um webhook pode ser criado em qualquer linguagem de programação do lado do servidor, como Python, PHP ou Node.js. Vamos usar Python para criar um webhook e Ngrok para implantá-lo. Vamos começar a construir nosso webhook para lidar com solicitações de previsão do tempo.
 
-## Creating a webhook service using Python
-Create a folder and name it as webhook_service. Under this folder, we are going to create the following two files: webhook.py, requirements.txt. 
-- webhook.py: it is the webhook service that will handle the requests sent from the Dialogflow agent and provide back a response. To keep it simple, we will create a webhook that gets parameters from an agent request and provides back a static response.  
+## Criando um serviço de webhook usando Python
+Crie uma pasta e nomeie-a como webhook_service. Dentro desta pasta, vamos criar os seguintes dois arquivos: webhook.py, requirements.txt.
+- webhook.py: é o serviço de webhook que irá lidar com as solicitações enviadas pelo agente Dialogflow e fornecer uma resposta. Para mantê-lo simples, vamos criar um webhook que obtém parâmetros de uma solicitação do agente e fornece uma resposta estática.
 
 ```
-#### minimal set of required modules
+#### conjunto mínimo de módulos necessários
 import json
 from flask import Flask
 from flask import Response, request
 import requests
 
-
-###create and initialize a flask app for our webhook
+### criar e inicializar um aplicativo flask para nosso webhook
 app = Flask(__name__)
 
-
-
-### Define a Route 
+### Definir uma Rota
 @app.route('/my_webhook', methods=['POST'])
 
-### Define the function that will be executed when the associated route is called
+### Definir a função que será executada quando a rota associada for chamada
 
 def post_webhook_dialogflow():
 
-#1) Getting information from dialogflow agent request 
+#1) Obtendo informações da solicitação do agente dialogflow
     body = request.get_json(silent=True)
     
-#Get tag used to identify which fulfillment is being called.
+#Obter tag usada para identificar qual fulfillment está sendo chamado.
     fulfillment = body['fulfillmentInfo']['tag']
     
-#Get parameters that are required to handle the desired action
+#Obter parâmetros que são necessários para lidar com a ação desejada
     prameters = []
     for key, value in body['sessionInfo']['parameters'].items():
          prameters.append({'name':key,'value':value})
 
-#2) Execute action
+#2) Executar ação
     msg = invoke_action(fulfillment,  prameters)
     
-#3) provide a webhook Response to the Dialogflow Agent
+#3) fornecer uma Resposta de webhook ao Agente do Dialogflow
     WebhookResponse=answer_webhook(msg)
     return WebhookResponse
 
-### Exploit parameters and incorporate them in the text response   
-def invoke_action(fulfillment,  prameters):
-
-
-#### Processes the webhook answer which should follow a particular JSON format
-def answer_webhook(msg):
- 
-### Run a webhook on localhost
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=8081, debug=True)
-```
-
-- invoke_action (fulfillment, prameters): defines the action that should be executed for a given fulfillment. It exploits parameters and incorporates them into the response text.
-
-```
+### Explorar parâmetros e incorporá-los na resposta de texto   
 def invoke_action(fulfillment,  prameters):
     print("\n\n\n\n\n=========> CALL ",fulfillment)
     if fulfillment == "GetWeather_fulfillment":
         city=str( prameters[0]['value'])
-        msg="There are overcast clouds in "+city
+        msg="Há nuvens encobertas em "+city
         return msg
-```
-- answer_webhook(msg): processes the webhook answer that should follow a particular JSON format.
-```
+
+#### Processa a resposta do webhook que deve seguir um formato JSON particular
 def answer_webhook(msg):
     message= {"fulfillment_response": {
       
@@ -218,23 +196,27 @@ def answer_webhook(msg):
     }
     }
     return Response(json.dumps(message), 200, mimetype='application/json')
+
+### Executar um webhook no localhost
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=8081, debug=True)
 ```
 
-- requirements.txt: contain the libraries required to create the webhook service, namelly flask and requests.
+- requirements.txt: contém as bibliotecas necessárias para criar o serviço de webhook, nomeadamente flask e requests.
+
 ```
 flask
 requests
 ```
 
-Check [here](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhookrequest.json) for the full webhook body request. <br> 
-Check [here](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhookresponse.jsonc) for the full webhook body response. <br>
-Check [here](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhook.py) for the full webhook script that we've built. <br>
+Confira [aqui](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhookrequest.json) para o corpo completo da solicitação do webhook. <br> 
+Confira [aqui](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhookresponse.jsonc) para o corpo completo da resposta do webhook. <br>
+Confira [aqui](https://github.com/hayo03/Dialogflow-CX-Start-Tutorial/blob/main/webhook_service/webhook.py) para o script completo do webhook que construímos. <br>
 
+## Executar o serviço de webhook
 
-## Run the webhook service
-
-Open terminal, create a virtual environment and install required packages.
- - Operating system: macOS/OS X, Linux; 
+Abra o terminal, crie um ambiente virtual e instale os pacotes necessários.
+ - Sistema operacional: macOS/OS X, Linux; 
 ```
 cd webhook_service
 python3 -m venv myenv
@@ -243,44 +225,44 @@ pip install -r requirements.txt
 python webhook.py
 ```
 
-- Operating system: Windows:
+- Sistema operacional: Windows:
 
 ```
 cd webhook_service
 python3 -m venv myenv
 myenv\Scripts\activate.bat
 pip install -r requirements.txt
-python webhook
+python webhook.py
 
 ```
-## Deploy a webhook service using Ngrok
+## Implantar um serviço de webhook usando Ngrok
 
-In the terminal just run the following commends:
-
-```
-cd Path_To_Ngrok
-./ngrok http 8081 (or ngrok http 8081 if the first one does not work)
+No terminal, basta executar os seguintes comandos:
 
 ```
+cd Caminho_Para_o_Ngrok
+./ngrok http 8081 (ou ngrok http 8081 se o primeiro não funcionar)
 
-## Setup webhook in Dialogflow and test it
+```
 
-We need to first create a webhook and add it to the fulfillment in "Collect city" page:
-1. Create webhook 
-   - Select the Manage tab.
-   - Click Webhooks, Click Create and put "my_webhook_service" as display name .
-   - Enter your webhook url generated by ngrok, some thing like https://2f4168d1c17d.ngrok.io/my_webhook.
-   - Click Save.
-2. Add a webhook to a fulfillment
-   - Click on "Collect city" page
-   - Click on the exsiting route 
-   - Find the fulfillment section and Check "Use Webhook"
-   - Select "my_webhook_service" and enter "GetWeather_fulfillment" in tag field. 
-3. To test the webhook, click the Test Agent and enter "What does the weather forecast look like?". If everything is well settled, the agent should provide you the response text you provided.
+## Configurar webhook no Dialogflow e testá-lo
 
-#### Update the webhook for invoking an external service
+Precisamos primeiro criar um webhook e adicioná-lo ao fulfillment na página "Collect city":
+1. Criar webhook 
+   - Selecione a guia Manage.
+   - Clique em Webhooks, Clique em Create e coloque "my_webhook_service" como display name.
+   - Insira a URL do seu webhook gerada pelo ngrok, algo como https://2f4168d1c17d.ngrok.io/my_webhook.
+   - Clique em Save.
+2. Adicionar um webhook a um fulfillment
+   - Clique na página "Collect city"
+   - Clique na rota existente
+   - Encontre a seção de fulfillment e marque "Use Webhook"
+   - Selecione "my_webhook_service" e insira "GetWeather_fulfillment" no campo tag.
+3. Para testar o webhook, clique em Test Agent e insira "Como está a previsão do tempo?". Se tudo estiver bem configurado, o agente deverá fornecer a resposta de texto que você forneceu.
 
-At this point, our webhook can only get information and invoke a simple action that provides a static response about the weather conditions. But in real cases, we need to invoke one of the external services such as the well-known [Open weather API](https://openweathermap.org/api) to get real-time weather information. To do so we need to update the invoke-action function so as be able to call  Open weather API : 
+#### Atualizar o webhook para invocar um serviço externo
+
+Neste ponto, nosso webhook só pode obter informações e invocar uma ação simples que fornece uma resposta estática sobre as condições climáticas. Mas em casos reais, precisamos invocar um dos serviços externos, como a conhecida [API Open Weather](https://openweathermap.org/api) para obter informações meteorológicas em tempo real. Para fazer isso, precisamos atualizar a função invoke_action para ser capaz de chamar a API Open Weather:
 
 ```
 def invoke_action(fulfillment, prameters):
@@ -295,65 +277,64 @@ def invoke_action(fulfillment, prameters):
         jsonResult = result.json()
         if result.status_code == 200:
             weatherCondition = jsonResult['weather'][0]['description']
-            reply = "There is {} there.".format(weatherCondition)
+            reply = "Há {} lá.".format(weatherCondition)
             print(reply)
             return reply
         else:
-            return "Something wrong with the API."
+            return "Algo deu errado com a API."
 ```
 
-- Test the updated webhook to check if it behaves properly.
-## <a name="complexconversations"></a>Designing more complex conversations
-- ##### [Handling multiple intents](#multipleintents)
-- ##### [Reusing information between flows](#reuseinformation)
+- Teste o webhook atualizado para verificar se ele se comporta corretamente.
 
-## <a name="multipleintents"></a>Handling multiple intents
-Previously, we created two simple flows (i.e., weather forecast and restaurant reservation). In this part, we show you how to design a flow to allow the bot to choose different routes depending on the user intent. Let's extend the "restaurant reservation" flow to allow the user to make a reservation if she/he wants, or the bot says goodbye to the user if she/he doesn't want to make a reservation. To support this scenario, we need to create two new intents "Reservation.YES" and "Reservation.NO".
+## <a name="complexconversations"></a>Desenhando conversas mais complexas
+- ##### [Lidando com múltiplas intenções](#multipleintents)
+- ##### [Reutilizando informações entre fluxos](#reuseinformation)
+
+## <a name="multipleintents"></a>Lidando com múltiplas intenções
+Anteriormente, criamos dois fluxos simples (ou seja, previsão do tempo e reserva de restaurante). Nesta parte, mostramos como projetar um fluxo para permitir que o bot escolha diferentes rotas dependendo da intenção do usuário. Vamos estender o fluxo "reserva de restaurante" para permitir que o usuário faça uma reserva se ele quiser, ou o bot se despeça do usuário se ele não quiser fazer uma reserva. Para suportar este cenário, precisamos criar duas novas intenções "Reservation.YES" e "Reservation.NO".
 <p align="center">
 <img src="images/flow_rest_reservation.png" width="500"> 
 <img src="images/restaurant_reservation.png" width="400"> 
 </p>
 
-1. Create intents "Reservation.YES" and "Reservation.NO".
-2. Select the flow "Restaurant reservation" and add these two pages:
-    - Page name: "Reservation"
-    - Page name: "Collect seats and date-time" / Add the two parameters "seats" and "date-time". For "seats" parameter agent asks "For how many people would you like to make the reservation"? and for "date-time" agent asks "What time-date would you like to make the reservation?".
-3. Update the route from "Collect food and location" to "End Flow" page.
-    - Change "End Flow" page to "Reservation" page.
-    - Add to the Fulfillment section the text "Would you like to make a reservation?".
-4. Add two routes to "Reservation" page.
-    - Route 1: Put intent as "Reservation.NO", Fulfillment as "Come visit us again when you get hungry! Bye 👋", and transition to "End Flow" page.
-    - Route 2: Put intent as "Reservation.YES" and transition to "Collect seats and date-time" page.
-5. Add a route to "Collect seats and date-time" page.
-    - Put condition as $page.params.status="FINAL", Fulfillment as "Done! I have booked a table for $session.params.seats people on $session.params.date-time.", and transition to "End Flow" page.
-  
-## <a name="reuseinformation"></a>Reusing information between flows
-After completing both flows, the agent will be able to handle user requests about both weather forecast and restaurant reservation. However, when you interact with the agent, you will notice that it may ask you for information that you already provided. As shown below, the agent asks the user "what is your location" despite the fact that he already provided his/her city in one of the previous turns. <br> 
+1. Crie as intenções "Reservation.YES" e "Reservation.NO".
+2. Selecione o fluxo "Reserva de restaurante" e adicione estas duas páginas:
+   - Nome da página: "Reservation"
+   - Nome da página: "Collect seats and date-time" / Adicione os dois parâmetros "seats" e "date-time". Para o parâmetro "seats" o agente pergunta "Para quantas pessoas você gostaria de fazer a reserva?" e para o parâmetro "date-time" o agente pergunta "Para qual data-hora você gostaria de fazer a reserva?".
+3. Atualize a rota de "Collect food and location" para a página "End Flow".
+   - Altere a página "End Flow" para a página "Reservation".
+   - Adicione à seção Fulfillment o texto "Você gostaria de fazer uma reserva?".
+4. Adicione duas rotas à página "Reservation".
+   - Rota 1: Coloque a intenção como "Reservation.NO", Fulfillment como "Venha nos visitar novamente quando estiver com fome! Tchau 👋", e transição para a página "End Flow".
+   - Rota 2: Coloque a intenção como "Reservation.YES" e transição para a página "Collect seats and date-time".
+5. Adicione uma rota à página "Collect seats and date-time".
+   - Coloque a condição como $page.params.status="FINAL", Fulfillment como "Pronto! Eu reservei uma mesa para $session.params.seats pessoas em $session.params.date-time.", e transição para a página "End Flow".
+      
+## <a name="reuseinformation"></a>Reutilizando informações entre fluxos
+Depois de completar ambos os fluxos, o agente será capaz de lidar com solicitações dos usuários sobre previsão do tempo e reserva de restaurante. No entanto, quando você interage com o agente, notará que ele pode pedir informações que você já forneceu. Como mostrado abaixo, o agente pergunta ao usuário "qual é a sua localização" apesar de o usuário já ter fornecido sua cidade em um dos turnos anteriores. <br>
 
 <p align="center">
   <img src="images/reuse_info.png">
 </p>
 
-To avoid such an issue, the agent needs to exploit the context well, i.e.,  any information that can be leveraged from the previous conversation turns or any other sources (e.g., user profile). In this tutorial, we are interested in exploiting the previous conversation turns as the main source for the context. Indeed, in Dialogflow CX,  there is an interesting feature called <b>Parameter preset (in the fulfillment section)</b> that allows to set or override the parameter values. So we will exploit this feature in order to reuse information from session parameters that represents the parameters fulfilled in the previous turns. To do so : <br>
-1. Select “Collect city” page in Weather forecast flow and edit the already defined route.
-2. Find Parameter preset feature within the fulfillment section.
-3. Click on Add Parameter and add the following:
-   - Parameter: location; 
-   - Value: "$session.params.city" 
-4. Test again the agent, what do you notice? 
-5. (Exercise) Now what do we need to do to make the agent be able to reuse the location value in the Search restaurant flow for the city parameter in the Weather forecast flow? 
+Para evitar tal problema, o agente precisa explorar bem o contexto, ou seja, qualquer informação que possa ser aproveitada das voltas anteriores da conversa ou de quaisquer outras fontes (por exemplo, perfil do usuário). Neste tutorial, estamos interessados em explorar as voltas anteriores da conversa como a principal fonte para o contexto. De fato, no Dialogflow CX, existe um recurso interessante chamado **Predefinição de Parâmetro (na seção Fulfillment)** que permite definir ou substituir os valores dos parâmetros. Então, vamos explorar este recurso para reutilizar informações dos parâmetros de sessão que representam os parâmetros preenchidos nos turnos anteriores. Para fazer isso: <br>
+1. Selecione a página “Collect city” no fluxo Weather forecast e edite a rota já definida.
+2. Encontre o recurso Predefinição de Parâmetro dentro da seção Fulfillment.
+3. Clique em Add Parameter e adicione o seguinte:
+   - Parâmetro: location; 
+   - Valor: "$session.params.city" 
+4. Teste novamente o agente, o que você percebe? 
+5. (Exercício) Agora, o que precisamos fazer para que o agente seja capaz de reutilizar o valor de location no fluxo Search restaurant para o parâmetro city no fluxo Weather forecast? 
 
-## <a name="conclu"></a>Conclusion
-So far, we explored how to:   
-  - Setup a DF CX project
-  - Create an agent.
-  - Create intents, parameters and entity types .
-  - Create flows, pages and build links between them using routes
-  - Create a webhook and make call to an external service
-  - Design more complex conversations
+## <a name="conclu"></a>Conclusão
+Até agora, exploramos como:
+  - Configurar um projeto DF CX
+  - Criar um agente.
+  - Criar intenções, parâmetros e tipos de entidade.
+  - Criar fluxos, páginas e construir links entre eles usando rotas
+  - Criar um webhook e fazer chamadas para um serviço externo
+  - Desenhar conversas mais complexas
 
-There are other interesting agent features that we haven't covered, including integrations, event handlers and so more. Overall, this tutorial covers most of the Dialogflow CX basics that every bot developer should be well-versed in toward building conversational agents doted with advanced capabilities.
-<b> <i> Please send your feedback to brabra.hayeet@gmail.com</i></b>
+Há outros recursos interessantes do agente que não abordamos, incluindo integrações, manipuladores de eventos e muito mais. No geral, este tutorial cobre a maioria dos conceitos básicos do Dialogflow CX que todo desenvolvedor de bots deve dominar para construir agentes conversacionais dotados de capacidades avançadas.
 
-
-
+**_Por favor, envie seu feedback para brabra.hayeet@gmail.com_**
